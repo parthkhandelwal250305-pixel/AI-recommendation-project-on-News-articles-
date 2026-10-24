@@ -1,0 +1,30 @@
+{
+  "_comment": "Personas are interest profiles. 'categories' is used ONLY by build_personas.py to derive ground truth from real MIND users whose click history is dominated (>=70%) by these categories. Category labels are NEVER shown to retrieval or to the LLM; they only see 'name' and 'description'. Descriptions are written as reader-facing prose (no developer notes) on purpose.",
+  "match_threshold": 0.70,
+  "personas": [
+    {"id": "p01", "name": "Sports Fanatic", "categories": ["sports"],
+     "description": "Lives for game day. Wants scores, recaps, trades, injuries, playoff races and news about their favorite teams and athletes."},
+    {"id": "p02", "name": "Markets & Money Reader", "categories": ["finance"],
+     "description": "Follows the economy and personal finances: stock market moves, company earnings, interest rates, savings, taxes and retirement planning."},
+    {"id": "p03", "name": "Foodie", "categories": ["foodanddrink"],
+     "description": "Loves eating and cooking. Interested in restaurants, recipes, chefs, food trends, drinks and what is new on the menu."},
+    {"id": "p04", "name": "Travel Planner", "categories": ["travel"],
+     "description": "Always planning the next trip. Wants destination ideas, airline and hotel news, travel tips and things to do around the world."},
+    {"id": "p05", "name": "Wellness Reader", "categories": ["health"],
+     "description": "Cares about staying healthy: medical research, nutrition, fitness, mental health, diseases and what doctors recommend."},
+    {"id": "p06", "name": "Lifestyle & Home Reader", "categories": ["lifestyle"],
+     "description": "Interested in everyday living: home and garden, relationships, fashion, parenting, money-saving tips and ways to improve daily life."},
+    {"id": "p07", "name": "Car Enthusiast", "categories": ["autos"],
+     "description": "Obsessed with cars and trucks: new model reviews, electric vehicles, recalls, car-buying advice, motorsport and classic cars."},
+    {"id": "p08", "name": "TV & Movie Buff", "categories": ["tv", "movies"],
+     "description": "Keeps up with what to watch: TV shows, series finales, streaming releases, movie reviews, box office and trailers."},
+    {"id": "p09", "name": "Music & Celebrity Follower", "categories": ["music", "entertainment"],
+     "description": "Follows musicians and famous people: new albums, concerts, award shows, celebrity news and pop culture moments."},
+    {"id": "p10", "name": "Current Affairs Follower", "categories": ["news"],
+     "description": "Wants to stay informed about the day's top stories: politics, government, crime, courts, major national events and breaking news."},
+    {"id": "p11", "name": "Weather & Daily Planner", "categories": ["weather"],
+     "description": "Checks the forecast before planning the day: storms, severe weather alerts, temperatures and seasonal conditions."},
+    {"id": "p12", "name": "Broad Generalist", "categories": ["news", "sports", "lifestyle"],
+     "description": "Reads a little of everything: top headlines, big sports stories and lifestyle pieces, without one strong passion."}
+  ]
+}

@@ -1,0 +1,9 @@
+metric,comparison,mean_diff,ci_low,ci_high,wins,ties,losses
+Precision@10,Retrieval-only vs Popularity,0.55,0.375,0.725,12,0,0
+Precision@10,Rerank vs Popularity,0.5833,0.425,0.7417,12,0,0
+Precision@10,Rerank vs Retrieval-only  (what the LLM adds),0.0333,-0.05,0.1167,5,4,3
+Precision@10,[diag] Rerank vs Category filter,-0.2583,-0.4083,-0.125,0,1,11
+NDCG@10,Retrieval-only vs Popularity,0.5537,0.3596,0.7381,11,0,1
+NDCG@10,Rerank vs Popularity,0.6041,0.4432,0.7612,12,0,0
+NDCG@10,Rerank vs Retrieval-only  (what the LLM adds),0.0504,-0.0416,0.1491,7,0,5
+NDCG@10,[diag] Rerank vs Category filter,-0.2514,-0.3912,-0.1324,0,0,12
