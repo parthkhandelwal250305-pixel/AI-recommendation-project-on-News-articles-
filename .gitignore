@@ -1,0 +1,26 @@
+# Raw and large/derived data (re-created by the scripts)
+data/raw/
+data/processed/
+*.npy
+*.zip
+
+# Main experiment: keep only the small artefacts that make results reproducible
+data/history_eval/*
+!data/history_eval/llm_rerank_*.jsonl
+!data/history_eval/blend_lambda.json
+!data/history_eval/chosen_variant.json
+
+# Python / editor
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+.ipynb_checkpoints/
+
+
+
+# Safety net: never commit these by accident
+results_v1/
+*.pdf
+*.docx
