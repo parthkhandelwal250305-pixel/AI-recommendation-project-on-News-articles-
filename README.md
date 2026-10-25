@@ -2,17 +2,28 @@
 
 A product-judgment project disguised as a recommender system. The question is not "can I build a recommender?" but **"what is the cheapest ranker that works, and does adding an LLM earn its cost?"** I tested it on real click logs with a free, local model, set the success bar before running the LLM tests, and report what I found, including the parts that didn't work.
 
-## Result in one table
+## Results
 
 Test: real readers from Microsoft's MIND-small dataset. Each reader's past clicks go in; the system ranks the articles they were shown; the score is how high the clicked ones land (nDCG@10, higher is better).
+
+**1. The cheap rankers: 3,000 held-out readers**
 
 | System | nDCG@10 | Cost per request |
 |---|---|---|
 | Random | 0.138 | none |
 | Popularity (time-aware click-through rate) | 0.268 | negligible |
 | Embedding similarity only | 0.263 | < 1 ms |
-| **Similarity + popularity blend** | **0.315** (3,000 readers) | < 1 ms |
-| Blend + free local LLM, given everything the blend has | blend 0.311 → **0.313** (600 readers) | ~56 s on a CPU laptop |
+| **Similarity + popularity blend** | **0.315** | < 1 ms |
+
+**2. Adding a free local LLM on top of the blend: a separate test on 600 of those readers (both rows scored on the same 600)**
+
+| System | nDCG@10 | Cost per request |
+|---|---|---|
+| Blend | 0.311 | < 1 ms |
+| Blend + free local LLM, given everything the blend has | 0.313 | ~56 s on a CPU laptop |
+| **Difference** | **+0.002, 95% CI [-0.004, +0.007]** | |
+
+*The blend scores 0.315 on all 3,000 readers and 0.311 on these 600, so compare numbers only within a table.*
 
 - The blend beats popularity by **+0.047 nDCG@10 (about 18%), 95% CI [+0.037, +0.057]**.
 - Similarity alone only ties popularity. The value comes from combining the two.
@@ -22,7 +33,10 @@ Test: real readers from Microsoft's MIND-small dataset. Each reader's past click
 
 Full numbers, caveats and the decision rationale are in [FINDINGS.md](FINDINGS.md).
 
+Left chart: all 3,000 readers; right chart: an earlier, smaller LLM test (150 readers, titles only).
 ![System comparison](results/history_eval/chart_systems.png)
+
+The equal-information test (600 readers):
 ![Equal-information test](results/history_eval/equal_info/chart_equal_paired.png)
 
 ## How it works
