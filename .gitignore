@@ -9,6 +9,8 @@ data/history_eval/*
 !data/history_eval/llm_rerank_*.jsonl
 !data/history_eval/blend_lambda.json
 !data/history_eval/chosen_variant.json
+!data/history_eval/llm_score_*.jsonl
+!data/history_eval/chosen_score_config.json
 
 # Python / editor
 __pycache__/
@@ -18,9 +20,12 @@ venv/
 .vscode/
 .ipynb_checkpoints/
 
-
+# Personal prep notes (not for the public repo)
+INTERVIEW_PREP.md
+RESUME_PROJECT_STORY.md
 
 # Safety net: never commit these by accident
 results_v1/
+HANDOFF_PROMPT*.md
 *.pdf
 *.docx
