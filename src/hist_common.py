@@ -31,6 +31,10 @@ HISTORY_SENSITIVITY = [5, 10, 20, 50]   # reported as a sensitivity analysis onl
 RERANK_K = 15                 # stage 1 hands the top 15 candidates to the LLM
 PICK_N = 5                    # the LLM picks its 5 favourites; the rest keep the blend's order
 VARIANTS = ["pick5_shuffled", "pick5_ranked"]   # prompt variants; chosen on the TUNE split only
+
+# ---- Equal-information experiment (LLM scores every shortlisted candidate; fused with the blend)
+SCORE_VARIANTS = ["content", "full"]   # content: reader history + article text only | full: also the blend's numbers
+W_GRID = [0, 0.25, 0.5, 1, 2, 4]       # weight of the LLM score in the fusion; chosen on TUNE cases only
 POP_PRIOR_M = 20              # smoothing strength for click-through-rate popularity
 MIN_WORTHWHILE_GAIN = 0.02    # ASSUMPTION: smallest nDCG@10 gain that would justify an LLM call per request
 
@@ -153,6 +157,50 @@ def stage1_order(sims, pop, lam):
     """Deterministic ranking by z(similarity) + lam * z(popularity). Used as the LLM's shortlist AND as the blend system."""
     score = zscore(sims) + lam * zscore(pop)
     return np.argsort(-score, kind="stable")
+
+
+CHOSEN_SCORE_PATH = os.path.join(OUT_DIR, "chosen_score_config.json")
+
+
+def score_path(split, variant):
+    return os.path.join(OUT_DIR, f"llm_score_{split}_{variant}.jsonl")
+
+
+def blend_scores(sims, pop, lam):
+    return zscore(sims) + lam * zscore(pop)
+
+
+def _top(stage1, k):
+    return [int(i) for i in stage1[:k]], [int(i) for i in stage1[k:]]
+
+
+def fused_full_order(stage1, blend_sc, llm_scores, w, k=RERANK_K):
+    """Blend + LLM, combined by weight w. Within the shortlist: z(blend) + w * z(LLM score); everything
+    else keeps the blend's order. w=0, or a failed/constant LLM output, gives exactly the blend's order."""
+    top, rest = _top(stage1, k)
+    if llm_scores is None or w == 0:
+        return np.array(top + rest)
+    fused = zscore([blend_sc[i] for i in top]) + w * zscore(llm_scores)
+    order = np.argsort(-fused, kind="stable")           # top is in blend order, so ties keep the blend's order
+    return np.array([top[j] for j in order] + rest)
+
+
+def llm_only_order(stage1, llm_scores, k=RERANK_K):
+    """Shortlist ordered by the LLM's scores alone (ties keep the blend's order)."""
+    top, rest = _top(stage1, k)
+    if llm_scores is None:
+        return np.array(top + rest)
+    order = np.argsort(-np.asarray(llm_scores, dtype=float), kind="stable")
+    return np.array([top[j] for j in order] + rest)
+
+
+def top_override_order(stage1, llm_scores, k=RERANK_K, p=PICK_N):
+    """The LLM's top p candidates go first; everyone else keeps the blend's order (the earlier 'pick 5' design)."""
+    top, _ = _top(stage1, k)
+    if llm_scores is None:
+        return np.array([int(i) for i in stage1])
+    picks = [top[j] for j in np.argsort(-np.asarray(llm_scores, dtype=float), kind="stable")[:p]]
+    return llm_full_order(stage1, picks)
 
 
 # ------------------------------------------------------------------ statistics
